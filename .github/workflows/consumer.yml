@@ -19,134 +19,159 @@ jobs:
     steps:
       - name: context
         run: |
-          echo "actor     : ${{ github.event.workflow_run.actor.login }}"
-          echo "head repo : ${{ github.event.workflow_run.head_repository.full_name }}"
-          echo "event     : ${{ github.event.workflow_run.event }}"
-          echo "run id    : ${{ env.RUNID }}"
-          rm -f /tmp/V0* /tmp/V1* 2>/dev/null || true
-      - name: download v4
-        uses: actions/download-artifact@v4
+          echo "run id : ${{ env.RUNID }}"
+          rm -f /tmp/V06_prefixed 2>/dev/null || true
+      - name: dl v4.1.2
+        uses: actions/download-artifact@v4.1.2
         continue-on-error: true
         with:
           name: poc
           run-id: ${{ env.RUNID }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          path: ./out_v4
-      - name: check v4
+          path: ./o_v4_1_2
+      - name: verdict v4.1.2
         run: |
-          echo "=== after v4 ==="
-          for f in V01_plain V02_backslash V03_absolute V04_doubled V05_urlenc V06_prefixed V07_dotslash V08_deep V09_unc V10_symlink; do
-            if [ -e "/tmp/$f" ]; then echo "ESCAPED /tmp/$f"; fi
-          done
-          if [ -e "$HOME/V01_plain" ]; then echo "ESCAPED HOME"; fi
-          echo "--- contained under ./out_v4 ---"
-          find ./out_v4 -maxdepth 4 2>/dev/null | head -20
-          rm -f /tmp/V0* /tmp/V1* 2>/dev/null || true
-      - name: download v4.1.8
-        uses: actions/download-artifact@v4.1.8
+          if [ -f ./o_v4_1_2/benign.txt ]; then CTRL=OK; else CTRL=DOWNLOAD_FAILED; fi
+          if [ -e /tmp/V06_prefixed ]; then ESC=ESCAPED; else ESC=contained; fi
+          echo "RESULT v4.1.2 control=$CTRL verdict=$ESC"
+          rm -f /tmp/V06_prefixed 2>/dev/null || true
+      - name: dl v4.1.3
+        uses: actions/download-artifact@v4.1.3
         continue-on-error: true
         with:
           name: poc
           run-id: ${{ env.RUNID }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          path: ./out_v4_1_8
-      - name: check v4.1.8
+          path: ./o_v4_1_3
+      - name: verdict v4.1.3
         run: |
-          echo "=== after v4.1.8 ==="
-          for f in V01_plain V02_backslash V03_absolute V04_doubled V05_urlenc V06_prefixed V07_dotslash V08_deep V09_unc V10_symlink; do
-            if [ -e "/tmp/$f" ]; then echo "ESCAPED /tmp/$f"; fi
-          done
-          if [ -e "$HOME/V01_plain" ]; then echo "ESCAPED HOME"; fi
-          echo "--- contained under ./out_v4_1_8 ---"
-          find ./out_v4_1_8 -maxdepth 4 2>/dev/null | head -20
-          rm -f /tmp/V0* /tmp/V1* 2>/dev/null || true
-      - name: download v4.3.0
+          if [ -f ./o_v4_1_3/benign.txt ]; then CTRL=OK; else CTRL=DOWNLOAD_FAILED; fi
+          if [ -e /tmp/V06_prefixed ]; then ESC=ESCAPED; else ESC=contained; fi
+          echo "RESULT v4.1.3 control=$CTRL verdict=$ESC"
+          rm -f /tmp/V06_prefixed 2>/dev/null || true
+      - name: dl v4.1.4
+        uses: actions/download-artifact@v4.1.4
+        continue-on-error: true
+        with:
+          name: poc
+          run-id: ${{ env.RUNID }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ./o_v4_1_4
+      - name: verdict v4.1.4
+        run: |
+          if [ -f ./o_v4_1_4/benign.txt ]; then CTRL=OK; else CTRL=DOWNLOAD_FAILED; fi
+          if [ -e /tmp/V06_prefixed ]; then ESC=ESCAPED; else ESC=contained; fi
+          echo "RESULT v4.1.4 control=$CTRL verdict=$ESC"
+          rm -f /tmp/V06_prefixed 2>/dev/null || true
+      - name: dl v4.1.7
+        uses: actions/download-artifact@v4.1.7
+        continue-on-error: true
+        with:
+          name: poc
+          run-id: ${{ env.RUNID }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ./o_v4_1_7
+      - name: verdict v4.1.7
+        run: |
+          if [ -f ./o_v4_1_7/benign.txt ]; then CTRL=OK; else CTRL=DOWNLOAD_FAILED; fi
+          if [ -e /tmp/V06_prefixed ]; then ESC=ESCAPED; else ESC=contained; fi
+          echo "RESULT v4.1.7 control=$CTRL verdict=$ESC"
+          rm -f /tmp/V06_prefixed 2>/dev/null || true
+      - name: dl v4.1.9
+        uses: actions/download-artifact@v4.1.9
+        continue-on-error: true
+        with:
+          name: poc
+          run-id: ${{ env.RUNID }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ./o_v4_1_9
+      - name: verdict v4.1.9
+        run: |
+          if [ -f ./o_v4_1_9/benign.txt ]; then CTRL=OK; else CTRL=DOWNLOAD_FAILED; fi
+          if [ -e /tmp/V06_prefixed ]; then ESC=ESCAPED; else ESC=contained; fi
+          echo "RESULT v4.1.9 control=$CTRL verdict=$ESC"
+          rm -f /tmp/V06_prefixed 2>/dev/null || true
+      - name: dl v4.2.1
+        uses: actions/download-artifact@v4.2.1
+        continue-on-error: true
+        with:
+          name: poc
+          run-id: ${{ env.RUNID }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ./o_v4_2_1
+      - name: verdict v4.2.1
+        run: |
+          if [ -f ./o_v4_2_1/benign.txt ]; then CTRL=OK; else CTRL=DOWNLOAD_FAILED; fi
+          if [ -e /tmp/V06_prefixed ]; then ESC=ESCAPED; else ESC=contained; fi
+          echo "RESULT v4.2.1 control=$CTRL verdict=$ESC"
+          rm -f /tmp/V06_prefixed 2>/dev/null || true
+      - name: dl v4.3.0
         uses: actions/download-artifact@v4.3.0
         continue-on-error: true
         with:
           name: poc
           run-id: ${{ env.RUNID }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          path: ./out_v4_3_0
-      - name: check v4.3.0
+          path: ./o_v4_3_0
+      - name: verdict v4.3.0
         run: |
-          echo "=== after v4.3.0 ==="
-          for f in V01_plain V02_backslash V03_absolute V04_doubled V05_urlenc V06_prefixed V07_dotslash V08_deep V09_unc V10_symlink; do
-            if [ -e "/tmp/$f" ]; then echo "ESCAPED /tmp/$f"; fi
-          done
-          if [ -e "$HOME/V01_plain" ]; then echo "ESCAPED HOME"; fi
-          echo "--- contained under ./out_v4_3_0 ---"
-          find ./out_v4_3_0 -maxdepth 4 2>/dev/null | head -20
-          rm -f /tmp/V0* /tmp/V1* 2>/dev/null || true
-      - name: download v5
-        uses: actions/download-artifact@v5
+          if [ -f ./o_v4_3_0/benign.txt ]; then CTRL=OK; else CTRL=DOWNLOAD_FAILED; fi
+          if [ -e /tmp/V06_prefixed ]; then ESC=ESCAPED; else ESC=contained; fi
+          echo "RESULT v4.3.0 control=$CTRL verdict=$ESC"
+          rm -f /tmp/V06_prefixed 2>/dev/null || true
+      - name: dl v5.0.0
+        uses: actions/download-artifact@v5.0.0
         continue-on-error: true
         with:
           name: poc
           run-id: ${{ env.RUNID }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          path: ./out_v5
-      - name: check v5
+          path: ./o_v5_0_0
+      - name: verdict v5.0.0
         run: |
-          echo "=== after v5 ==="
-          for f in V01_plain V02_backslash V03_absolute V04_doubled V05_urlenc V06_prefixed V07_dotslash V08_deep V09_unc V10_symlink; do
-            if [ -e "/tmp/$f" ]; then echo "ESCAPED /tmp/$f"; fi
-          done
-          if [ -e "$HOME/V01_plain" ]; then echo "ESCAPED HOME"; fi
-          echo "--- contained under ./out_v5 ---"
-          find ./out_v5 -maxdepth 4 2>/dev/null | head -20
-          rm -f /tmp/V0* /tmp/V1* 2>/dev/null || true
-      - name: download v6
-        uses: actions/download-artifact@v6
+          if [ -f ./o_v5_0_0/benign.txt ]; then CTRL=OK; else CTRL=DOWNLOAD_FAILED; fi
+          if [ -e /tmp/V06_prefixed ]; then ESC=ESCAPED; else ESC=contained; fi
+          echo "RESULT v5.0.0 control=$CTRL verdict=$ESC"
+          rm -f /tmp/V06_prefixed 2>/dev/null || true
+      - name: dl v6.0.0
+        uses: actions/download-artifact@v6.0.0
         continue-on-error: true
         with:
           name: poc
           run-id: ${{ env.RUNID }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          path: ./out_v6
-      - name: check v6
+          path: ./o_v6_0_0
+      - name: verdict v6.0.0
         run: |
-          echo "=== after v6 ==="
-          for f in V01_plain V02_backslash V03_absolute V04_doubled V05_urlenc V06_prefixed V07_dotslash V08_deep V09_unc V10_symlink; do
-            if [ -e "/tmp/$f" ]; then echo "ESCAPED /tmp/$f"; fi
-          done
-          if [ -e "$HOME/V01_plain" ]; then echo "ESCAPED HOME"; fi
-          echo "--- contained under ./out_v6 ---"
-          find ./out_v6 -maxdepth 4 2>/dev/null | head -20
-          rm -f /tmp/V0* /tmp/V1* 2>/dev/null || true
-      - name: download v7
-        uses: actions/download-artifact@v7
+          if [ -f ./o_v6_0_0/benign.txt ]; then CTRL=OK; else CTRL=DOWNLOAD_FAILED; fi
+          if [ -e /tmp/V06_prefixed ]; then ESC=ESCAPED; else ESC=contained; fi
+          echo "RESULT v6.0.0 control=$CTRL verdict=$ESC"
+          rm -f /tmp/V06_prefixed 2>/dev/null || true
+      - name: dl v7.0.0
+        uses: actions/download-artifact@v7.0.0
         continue-on-error: true
         with:
           name: poc
           run-id: ${{ env.RUNID }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          path: ./out_v7
-      - name: check v7
+          path: ./o_v7_0_0
+      - name: verdict v7.0.0
         run: |
-          echo "=== after v7 ==="
-          for f in V01_plain V02_backslash V03_absolute V04_doubled V05_urlenc V06_prefixed V07_dotslash V08_deep V09_unc V10_symlink; do
-            if [ -e "/tmp/$f" ]; then echo "ESCAPED /tmp/$f"; fi
-          done
-          if [ -e "$HOME/V01_plain" ]; then echo "ESCAPED HOME"; fi
-          echo "--- contained under ./out_v7 ---"
-          find ./out_v7 -maxdepth 4 2>/dev/null | head -20
-          rm -f /tmp/V0* /tmp/V1* 2>/dev/null || true
-      - name: download v8
-        uses: actions/download-artifact@v8
+          if [ -f ./o_v7_0_0/benign.txt ]; then CTRL=OK; else CTRL=DOWNLOAD_FAILED; fi
+          if [ -e /tmp/V06_prefixed ]; then ESC=ESCAPED; else ESC=contained; fi
+          echo "RESULT v7.0.0 control=$CTRL verdict=$ESC"
+          rm -f /tmp/V06_prefixed 2>/dev/null || true
+      - name: dl v8.0.1
+        uses: actions/download-artifact@v8.0.1
         continue-on-error: true
         with:
           name: poc
           run-id: ${{ env.RUNID }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          path: ./out_v8
-      - name: check v8
+          path: ./o_v8_0_1
+      - name: verdict v8.0.1
         run: |
-          echo "=== after v8 ==="
-          for f in V01_plain V02_backslash V03_absolute V04_doubled V05_urlenc V06_prefixed V07_dotslash V08_deep V09_unc V10_symlink; do
-            if [ -e "/tmp/$f" ]; then echo "ESCAPED /tmp/$f"; fi
-          done
-          if [ -e "$HOME/V01_plain" ]; then echo "ESCAPED HOME"; fi
-          echo "--- contained under ./out_v8 ---"
-          find ./out_v8 -maxdepth 4 2>/dev/null | head -20
-          rm -f /tmp/V0* /tmp/V1* 2>/dev/null || true
+          if [ -f ./o_v8_0_1/benign.txt ]; then CTRL=OK; else CTRL=DOWNLOAD_FAILED; fi
+          if [ -e /tmp/V06_prefixed ]; then ESC=ESCAPED; else ESC=contained; fi
+          echo "RESULT v8.0.1 control=$CTRL verdict=$ESC"
+          rm -f /tmp/V06_prefixed 2>/dev/null || true
