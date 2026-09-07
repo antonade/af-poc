@@ -1,0 +1,36 @@
+name: consumer
+on:
+  workflow_run:
+    workflows: ["producer"]
+    types: [completed]
+permissions:
+  actions: read
+  contents: read
+jobs:
+  consume:
+    runs-on: ubuntu-latest
+    steps:
+      - name: state BEFORE download
+        run: |
+          echo "trigger actor : ${{ github.event.workflow_run.actor.login }}"
+          echo "head repo     : ${{ github.event.workflow_run.head_repository.full_name }}"
+          echo "event         : ${{ github.event.workflow_run.event }}"
+          echo "canary before : $(cat /tmp/CANARY_TARGET 2>/dev/null || echo ABSENT)"
+      - uses: actions/download-artifact@v4
+        with:
+          name: poc
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ./artifacts
+        continue-on-error: true
+      - name: state AFTER download
+        run: |
+          echo "--- inside declared path: ---"
+          find ./artifacts -maxdepth 3 2>/dev/null | head -40
+          echo "--- OUTSIDE declared path: ---"
+          if [ -f /tmp/CANARY_TARGET ]; then
+            echo "TRAVERSAL CONFIRMED: /tmp/CANARY_TARGET written"
+            cat /tmp/CANARY_TARGET
+          else
+            echo "no write outside path:"
+          fi
