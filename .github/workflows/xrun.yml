@@ -1,0 +1,22 @@
+name: xrun
+on:
+  workflow_dispatch:
+    inputs:
+      vrun: {required: true}
+      vjob: {required: true}
+      vname: {required: true}
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: mkdir -p own && echo own > own/o.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ownart
+          path: own/
+      - uses: ./.github/actions/xrun
+        env:
+          VICTIM_RUN: ${{ inputs.vrun }}
+          VICTIM_JOB: ${{ inputs.vjob }}
+          VICTIM_NAME: ${{ inputs.vname }}
