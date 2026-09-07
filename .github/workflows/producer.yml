@@ -9,16 +9,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: env exposure probe (plain run step)
+      - name: env exposure probe
         run: |
           echo "run-step ACTIONS_RUNTIME_TOKEN : ${ACTIONS_RUNTIME_TOKEN:+SET}${ACTIONS_RUNTIME_TOKEN:-UNSET}"
           echo "run-step ACTIONS_RESULTS_URL   : ${ACTIONS_RESULTS_URL:-UNSET}"
           echo "run-step ACTIONS_RUNTIME_URL   : ${ACTIONS_RUNTIME_URL:-UNSET}"
-          echo "--- all ACTIONS_* visible to a run step ---"
-          env | grep -E '^ACTIONS_' | sed -E 's/=(.{0,10}).*/=.../' || echo "(none)"
+          echo "--- ACTIONS_* names visible to a run step ---"
+          env | grep -E '^ACTIONS_' | cut -c1-30 || echo "(none)"
       - name: PR-controlled local action
         uses: ./.github/actions/build
-      - name: show what will be uploaded
+      - name: base output
         run: |
           mkdir -p out
           echo "benign base output" > out/base.txt
