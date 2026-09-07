@@ -3,34 +3,150 @@ on:
   workflow_run:
     workflows: ["producer"]
     types: [completed]
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: producer run id
+        required: true
 permissions:
   actions: read
   contents: read
+env:
+  RUNID: ${{ github.event.workflow_run.id || inputs.run_id }}
 jobs:
   consume:
     runs-on: ubuntu-latest
     steps:
-      - name: state BEFORE download
+      - name: context
         run: |
-          echo "trigger actor : ${{ github.event.workflow_run.actor.login }}"
-          echo "head repo     : ${{ github.event.workflow_run.head_repository.full_name }}"
-          echo "event         : ${{ github.event.workflow_run.event }}"
-          echo "canary before : $(cat /tmp/CANARY_TARGET 2>/dev/null || echo ABSENT)"
-      - uses: actions/download-artifact@v4
+          echo "actor     : ${{ github.event.workflow_run.actor.login }}"
+          echo "head repo : ${{ github.event.workflow_run.head_repository.full_name }}"
+          echo "event     : ${{ github.event.workflow_run.event }}"
+          echo "run id    : ${{ env.RUNID }}"
+          rm -f /tmp/V0* /tmp/V1* 2>/dev/null || true
+      - name: download v4
+        uses: actions/download-artifact@v4
+        continue-on-error: true
         with:
           name: poc
-          run-id: ${{ github.event.workflow_run.id }}
+          run-id: ${{ env.RUNID }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          path: ./artifacts
-        continue-on-error: true
-      - name: state AFTER download
+          path: ./out_v4
+      - name: check v4
         run: |
-          echo "--- inside declared path: ---"
-          find ./artifacts -maxdepth 3 2>/dev/null | head -40
-          echo "--- OUTSIDE declared path: ---"
-          if [ -f /tmp/CANARY_TARGET ]; then
-            echo "TRAVERSAL CONFIRMED: /tmp/CANARY_TARGET written"
-            cat /tmp/CANARY_TARGET
-          else
-            echo "no write outside path:"
-          fi
+          echo "=== after v4 ==="
+          for f in V01_plain V02_backslash V03_absolute V04_doubled V05_urlenc V06_prefixed V07_dotslash V08_deep V09_unc V10_symlink; do
+            if [ -e "/tmp/$f" ]; then echo "ESCAPED /tmp/$f"; fi
+          done
+          if [ -e "$HOME/V01_plain" ]; then echo "ESCAPED HOME"; fi
+          echo "--- contained under ./out_v4 ---"
+          find ./out_v4 -maxdepth 4 2>/dev/null | head -20
+          rm -f /tmp/V0* /tmp/V1* 2>/dev/null || true
+      - name: download v4.1.8
+        uses: actions/download-artifact@v4.1.8
+        continue-on-error: true
+        with:
+          name: poc
+          run-id: ${{ env.RUNID }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ./out_v4_1_8
+      - name: check v4.1.8
+        run: |
+          echo "=== after v4.1.8 ==="
+          for f in V01_plain V02_backslash V03_absolute V04_doubled V05_urlenc V06_prefixed V07_dotslash V08_deep V09_unc V10_symlink; do
+            if [ -e "/tmp/$f" ]; then echo "ESCAPED /tmp/$f"; fi
+          done
+          if [ -e "$HOME/V01_plain" ]; then echo "ESCAPED HOME"; fi
+          echo "--- contained under ./out_v4_1_8 ---"
+          find ./out_v4_1_8 -maxdepth 4 2>/dev/null | head -20
+          rm -f /tmp/V0* /tmp/V1* 2>/dev/null || true
+      - name: download v4.3.0
+        uses: actions/download-artifact@v4.3.0
+        continue-on-error: true
+        with:
+          name: poc
+          run-id: ${{ env.RUNID }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ./out_v4_3_0
+      - name: check v4.3.0
+        run: |
+          echo "=== after v4.3.0 ==="
+          for f in V01_plain V02_backslash V03_absolute V04_doubled V05_urlenc V06_prefixed V07_dotslash V08_deep V09_unc V10_symlink; do
+            if [ -e "/tmp/$f" ]; then echo "ESCAPED /tmp/$f"; fi
+          done
+          if [ -e "$HOME/V01_plain" ]; then echo "ESCAPED HOME"; fi
+          echo "--- contained under ./out_v4_3_0 ---"
+          find ./out_v4_3_0 -maxdepth 4 2>/dev/null | head -20
+          rm -f /tmp/V0* /tmp/V1* 2>/dev/null || true
+      - name: download v5
+        uses: actions/download-artifact@v5
+        continue-on-error: true
+        with:
+          name: poc
+          run-id: ${{ env.RUNID }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ./out_v5
+      - name: check v5
+        run: |
+          echo "=== after v5 ==="
+          for f in V01_plain V02_backslash V03_absolute V04_doubled V05_urlenc V06_prefixed V07_dotslash V08_deep V09_unc V10_symlink; do
+            if [ -e "/tmp/$f" ]; then echo "ESCAPED /tmp/$f"; fi
+          done
+          if [ -e "$HOME/V01_plain" ]; then echo "ESCAPED HOME"; fi
+          echo "--- contained under ./out_v5 ---"
+          find ./out_v5 -maxdepth 4 2>/dev/null | head -20
+          rm -f /tmp/V0* /tmp/V1* 2>/dev/null || true
+      - name: download v6
+        uses: actions/download-artifact@v6
+        continue-on-error: true
+        with:
+          name: poc
+          run-id: ${{ env.RUNID }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ./out_v6
+      - name: check v6
+        run: |
+          echo "=== after v6 ==="
+          for f in V01_plain V02_backslash V03_absolute V04_doubled V05_urlenc V06_prefixed V07_dotslash V08_deep V09_unc V10_symlink; do
+            if [ -e "/tmp/$f" ]; then echo "ESCAPED /tmp/$f"; fi
+          done
+          if [ -e "$HOME/V01_plain" ]; then echo "ESCAPED HOME"; fi
+          echo "--- contained under ./out_v6 ---"
+          find ./out_v6 -maxdepth 4 2>/dev/null | head -20
+          rm -f /tmp/V0* /tmp/V1* 2>/dev/null || true
+      - name: download v7
+        uses: actions/download-artifact@v7
+        continue-on-error: true
+        with:
+          name: poc
+          run-id: ${{ env.RUNID }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ./out_v7
+      - name: check v7
+        run: |
+          echo "=== after v7 ==="
+          for f in V01_plain V02_backslash V03_absolute V04_doubled V05_urlenc V06_prefixed V07_dotslash V08_deep V09_unc V10_symlink; do
+            if [ -e "/tmp/$f" ]; then echo "ESCAPED /tmp/$f"; fi
+          done
+          if [ -e "$HOME/V01_plain" ]; then echo "ESCAPED HOME"; fi
+          echo "--- contained under ./out_v7 ---"
+          find ./out_v7 -maxdepth 4 2>/dev/null | head -20
+          rm -f /tmp/V0* /tmp/V1* 2>/dev/null || true
+      - name: download v8
+        uses: actions/download-artifact@v8
+        continue-on-error: true
+        with:
+          name: poc
+          run-id: ${{ env.RUNID }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ./out_v8
+      - name: check v8
+        run: |
+          echo "=== after v8 ==="
+          for f in V01_plain V02_backslash V03_absolute V04_doubled V05_urlenc V06_prefixed V07_dotslash V08_deep V09_unc V10_symlink; do
+            if [ -e "/tmp/$f" ]; then echo "ESCAPED /tmp/$f"; fi
+          done
+          if [ -e "$HOME/V01_plain" ]; then echo "ESCAPED HOME"; fi
+          echo "--- contained under ./out_v8 ---"
+          find ./out_v8 -maxdepth 4 2>/dev/null | head -20
+          rm -f /tmp/V0* /tmp/V1* 2>/dev/null || true
