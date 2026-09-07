@@ -1,0 +1,5 @@
+name: build
+description: local composite/JS action - resolved from the merge commit
+runs:
+  using: node20
+  main: index.js
